@@ -11,6 +11,7 @@ interface EditProps {
 }
 
 function Edit({survey}: EditProps) {
+    console.log(survey)
     return <Layout>
         <SurveyForm survey={survey} />
     </Layout>
@@ -31,7 +32,8 @@ export async function getServerSideProps({req, res, params}: NextPageContext) {
                 select: {
                     id: true,
                 }
-            }
+            },
+            surveyQuestions: true
         }
     })
 

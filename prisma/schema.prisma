@@ -18,7 +18,7 @@ model SurveyQuestion {
  description String?
  data String?
  survey Survey @relation(fields: [surveyId], references: [id])
- surveyId String
+ surveyId String @map(name: "survey_id")
  createdAt      DateTime     @default(now()) @map(name: "created_at")
  updatedAt      DateTime     @default(now()) @map(name: "updated_at")
  surveyAnswerQuestions SurveyAnswerQuestion[]
@@ -30,7 +30,7 @@ model SurveyQuestion {
  startDate DateTime?
  endDate DateTime?
  survey Survey @relation(fields: [surveyId], references: [id])
- surveyId String
+ surveyId String @map(name: "survey_id")
  surveyAnswerQuestions SurveyAnswerQuestion[]
  @@map(name: "survey_answers")
  }
@@ -40,9 +40,9 @@ model SurveyQuestion {
  createdAt      DateTime     @default(now()) @map(name: "created_at")
  updatedAt      DateTime     @default(now()) @map(name: "updated_at")
  surveyQuestion SurveyQuestion @relation(fields: [surveyQuestionId], references: [id])
- surveyQuestionId String
+ surveyQuestionId String @map(name: "survey_question_id")
  surveyAnswer SurveyAnswer @relation(fields: [surveyAnswerId], references: [id])
- surveyAnswerId String
+ surveyAnswerId String @map(name: "survey_answer_id")
  answer String
  @@map(name: "survey_answer_question")
  }
@@ -51,13 +51,13 @@ model Survey {
 id             String       @id @default(uuid())
 createdAt      DateTime     @default(now()) @map(name: "created_at")
 updatedAt      DateTime     @default(now()) @map(name: "updated_at")
-expireAt      DateTime
+expireAt      DateTime      @map(name: "expire_at")
 status Int
 description String?
 title  String
 slug   String
-userId String
-image_url String?
+userId String @map(name: "user_id")
+imageUrl String? @map(name: "image_url")
 user User @relation(fields: [userId], references: [id])
 surveyQuestions SurveyQuestion[]
 surveyAnswers SurveyAnswer[]
