@@ -39,7 +39,7 @@ function SurveyForm({survey}: SurveyFormProps) {
 
     const onSubmit: SubmitHandler<Inputs> = async data => {
         console.log(data)
-        const res = await resolver(axios.post("http://localhost:3000/api/survey", {
+        /**const res = await resolver(axios.post("http://localhost:3000/api/survey", {
             ...data,
             expireAt: new Date(data.expireAt),
             status: data.status ? 1 : 0
@@ -56,7 +56,7 @@ function SurveyForm({survey}: SurveyFormProps) {
             //could and this with set error
             //and specific message form the api
             toast.error("Something went wrong")
-        }
+        }*/
     }
 
     const onUpdate: SubmitHandler<Inputs> = async data => {
@@ -67,7 +67,7 @@ function SurveyForm({survey}: SurveyFormProps) {
     return <FormProvider {...methods} >
         <form onSubmit={handleSubmit(survey ? onUpdate : onSubmit)} className="mt-20">
             <div className="shadow sm:rounded-md sm:overflow-hidden">
-                <div className="px-4 py-5 bg-white space-y-6 sm:p-6">
+                <div className="px-4 py-5 bg-white space-y-6 sm:p-10">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Image</label>
                         <div className="mt-1 flex items-center">
