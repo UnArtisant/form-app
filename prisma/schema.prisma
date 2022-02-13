@@ -1,0 +1,74 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model SurveyQuestion {
+ id             String       @id @default(uuid())
+ type String
+ question String
+ description String?
+ data String?
+ survey Survey @relation(fields: [surveyId], references: [id])
+ surveyId String
+ createdAt      DateTime     @default(now()) @map(name: "created_at")
+ updatedAt      DateTime     @default(now()) @map(name: "updated_at")
+ surveyAnswerQuestions SurveyAnswerQuestion[]
+ @@map(name: "survey_questions")
+ }
+
+ model SurveyAnswer {
+ id             String       @id @default(uuid())
+ startDate DateTime?
+ endDate DateTime?
+ survey Survey @relation(fields: [surveyId], references: [id])
+ surveyId String
+ surveyAnswerQuestions SurveyAnswerQuestion[]
+ @@map(name: "survey_answers")
+ }
+
+ model SurveyAnswerQuestion {
+ id             String       @id @default(uuid())
+ createdAt      DateTime     @default(now()) @map(name: "created_at")
+ updatedAt      DateTime     @default(now()) @map(name: "updated_at")
+ surveyQuestion SurveyQuestion @relation(fields: [surveyQuestionId], references: [id])
+ surveyQuestionId String
+ surveyAnswer SurveyAnswer @relation(fields: [surveyAnswerId], references: [id])
+ surveyAnswerId String
+ answer String
+ @@map(name: "survey_answer_question")
+ }
+
+model Survey {
+id             String       @id @default(uuid())
+createdAt      DateTime     @default(now()) @map(name: "created_at")
+updatedAt      DateTime     @default(now()) @map(name: "updated_at")
+expireAt      DateTime
+status Int
+description String?
+title  String
+slug   String
+userId String
+image_url String?
+user User @relation(fields: [userId], references: [id])
+surveyQuestions SurveyQuestion[]
+surveyAnswers SurveyAnswer[]
+@@map(name: "surveys")
+}
+
+model User {
+  id      String      @id @default(uuid())
+  email   String   @unique
+  username    String
+  password String
+  surveys Survey[]
+  @@map(name: "users")
+}
