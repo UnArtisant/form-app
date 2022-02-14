@@ -2,12 +2,12 @@ import React, {useState} from "react";
 import Input from "../../app/component/input";
 import TextArea from "../../app/component/textarea";
 import {Prisma} from "@prisma/client";
-import {SubmitHandler, useFieldArray, useForm, FormProvider} from "react-hook-form";
-import {resolver} from "../../app/helper/resolver";
-import axios from "axios";
-import {toast} from "react-hot-toast";
+import {SubmitHandler, useForm, FormProvider} from "react-hook-form";
 import {format} from "date-fns"
 import QuestionEditor from "./question.editor";
+import {toast} from "react-hot-toast";
+import {resolver} from "../../app/helper/resolver";
+import axios from "axios";
 
 interface SurveyFormProps {
     survey?: Prisma.SurveySelect
@@ -31,15 +31,17 @@ function SurveyForm({survey}: SurveyFormProps) {
             description: survey.description,
             //@ts-ignore
             expireAt: format(new Date(survey.expireAt), 'MM-dd-yyyy'),
-            status: survey.status
+            status: survey.status,
+            questions : survey.surveyQuestions.map(item => {
+               return {...item, data: JSON.parse(item.data)}
+            })
         } : null
     });
 
-    const {register, handleSubmit, formState: {errors}, reset, control, watch} = methods
+    const {register, handleSubmit, formState: {errors}, reset} = methods
 
     const onSubmit: SubmitHandler<Inputs> = async data => {
-        console.log(data)
-        /**const res = await resolver(axios.post("http://localhost:3000/api/survey", {
+        const res = await resolver(axios.post("http://localhost:3000/api/survey", {
             ...data,
             expireAt: new Date(data.expireAt),
             status: data.status ? 1 : 0
@@ -56,7 +58,7 @@ function SurveyForm({survey}: SurveyFormProps) {
             //could and this with set error
             //and specific message form the api
             toast.error("Something went wrong")
-        }*/
+        }
     }
 
     const onUpdate: SubmitHandler<Inputs> = async data => {
