@@ -1,15 +1,19 @@
 import {Prisma} from "@prisma/client";
 import Link from "next/link"
 import Swal from "sweetalert2"
+import {resolver} from "../../app/helper/resolver";
+import axios from "axios";
 
 interface SurveyCardProps {
-    survey : Prisma.SurveySelect,
+    survey: Prisma.SurveySelect,
+    handleRemove: () => {}
     key?: number
 }
 
-export const SurveyCard = ({survey}: SurveyCardProps) => {
+export const SurveyCard = ({survey, handleRemove}: SurveyCardProps) => {
 
-    const handleDelete = () => {
+    const handleDelete = async (id: string) => {
+
         Swal.fire({
             title: 'Are you sure?',
             text: "You won't be able to revert this!",
@@ -18,13 +22,17 @@ export const SurveyCard = ({survey}: SurveyCardProps) => {
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
             confirmButtonText: 'Yes, delete it!'
-        }).then((result) => {
+        }).then(async (result) => {
             if (result.isConfirmed) {
-                Swal.fire(
-                    'Deleted!',
-                    'Your file has been deleted.',
-                    'success'
-                )
+                const res = await resolver(axios.delete(`http://localhost:3000/api/survey/${id}`))
+                handleRemove()
+                if (res.data) {
+                    Swal.fire(
+                        'Deleted!',
+                        'Your file has been deleted.',
+                        'success'
+                    )
+                }
             }
         })
     }
@@ -84,21 +92,21 @@ export const SurveyCard = ({survey}: SurveyCardProps) => {
                         </svg>
                     </a>
                 </Link>
-                <button onClick={handleDelete}>
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-red-500"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                >
-                    <path
-                        fillRule="evenodd"
-                        d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
-                        clipRule="evenodd"
-                    />
-                </svg>
-            </button>
+                <button onClick={() => handleDelete(survey.id)}>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-red-500"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                    >
+                        <path
+                            fillRule="evenodd"
+                            d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z"
+                            clipRule="evenodd"
+                        />
+                    </svg>
+                </button>
+            </div>
         </div>
     </div>
-</div>
 }

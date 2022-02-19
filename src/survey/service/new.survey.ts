@@ -43,6 +43,7 @@ export const newSurvey = async (req: NextApiRequest, res: NextApiResponse) => {
 
         return res.status(200).json({survey})
     } catch (e) {
+        console.log(e)
         return res.status(500).json({
             status: 500,
             message: "Soemthing went wrong"

@@ -27,11 +27,8 @@ function SurveyForm({survey}: SurveyFormProps) {
     const methods = useForm<Inputs>({
         //@ts-ignore
         defaultValues: survey ? {
-            title: survey.title,
-            description: survey.description,
+            ...survey,
             //@ts-ignore
-            expireAt: format(new Date(survey.expireAt), 'MM-dd-yyyy'),
-            status: survey.status,
             questions : survey.surveyQuestions.map(item => {
                return {...item, data: JSON.parse(item.data)}
             })
@@ -55,14 +52,21 @@ function SurveyForm({survey}: SurveyFormProps) {
                 status: false,
             })
         } else {
-            //could and this with set error
-            //and specific message form the api
             toast.error("Something went wrong")
         }
     }
 
     const onUpdate: SubmitHandler<Inputs> = async data => {
-        console.log(data)
+        const res = await resolver(axios.put("http://localhost:3000/api/survey", {
+            ...data,
+            expireAt: new Date(data.expireAt),
+            status: data.status ? 1 : 0
+        }).then(r => r.data))
+        if (res.data) {
+            toast.success("Survey successfully posted")
+        } else {
+            toast.error("Something went wrong")
+        }
     }
 
 
